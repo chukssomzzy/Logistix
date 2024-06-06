@@ -1,0 +1,63 @@
+Project Logistix {
+  database_type: 'MySQL'
+  Note: '''
+    # Logistix project database schema
+  '''
+}
+
+Table users as U {
+  id varchar(255) [pk]
+  first_name varchar(255)
+  last_name varchar(255)
+  email varchar(255) [not null, unique]
+  password_hash varchar(255) [not null]
+  address_id varchar(255) [ref: > users_address.id]
+  created_at timestamp [default: `now()`, not null]
+  updated_at timestamp [default: `now()`, not null]
+  country_code int
+  note: "table 'users' contains user information"
+}
+
+Table users_address as UA {
+  id varchar(255) [pk, increment]
+  address varchar(255) [not null]
+  state varchar(255) [not null]
+  city varchar(255) [not null]
+  country_code int [not null]
+  postal_code varchar(20) [not null]
+  created_at timestamp [default: `now()`, not null]
+  updated_at timestamp [default: `now()`, not null]
+  note: "table 'users_address' contains user address information"
+}
+
+Enum package_status {
+  pending
+  shipped
+  delivered
+  cancelled
+  returned
+  lost
+}
+
+Table packages as P {
+  id varchar(255) [pk, increment] 
+  user_id int [ref: < users.id]
+  name varchar(255) [not null] 
+  weight int [not null, note: "weight in grams"]
+  pickup_location_id varchar(255) [ref: > pickup_locations.id]
+  pickup_date datetime [not null]
+  status package_status [default: 'pending'] 
+  created_at timestamp [default: `now()`, not null] 
+  updated_at timestamp [default: `now()`, not null]
+}
+
+Table pickup_locations {
+  id varchar(255) [pk]
+  address varchar(255) [not null]
+  state varchar(255) [not null] 
+  city varchar(255) [not null]
+  country_code int [not null]
+  postal_code varchar(20) [not null]
+  created_at timestamp [default:  `now()`, not null] 
+  updated_at timestamp [default: `now()`, not null]
+}
