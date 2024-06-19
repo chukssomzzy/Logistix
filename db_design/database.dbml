@@ -10,7 +10,7 @@ Table users as U {
   first_name varchar(30)
   last_name varchar(30)
   email varchar(30) [not null, unique]
-  password_hash varchar(255) [not null]
+  password_hash varchar(255)
   address_id varchar(255) [ref: - address.id]
   created_at timestamp [default: `now()`, not null]
   updated_at timestamp [default: `now()`, not null]
@@ -40,19 +40,23 @@ Enum package_status {
 
 Table packages as P {
   id varchar(255) [pk, increment] 
-  user_id varchar(255) [ref: < users.id]
+  user_id varchar(255) [not null, ref: < users.id]
   name varchar(255) [not null] 
   weight int [not null, note: "weight in grams"]
-  pickup_location_id varchar(255) [ref: > address.id]
+  pickup_location_id varchar(255) [not null, ref: > address.id]
   pickup_date datetime [not null]
   status package_status [default: 'pending', not null] 
   created_at timestamp [default: `now()`, not null] 
   updated_at timestamp [default: `now()`, not null]
 }
 
+Table packages_histories {
+  package_id varchar(255) [ref: <> packages.id]
+  package_history_id varchar(255) [ref: <> package_history.id]
+}
+
 Table package_history as PH {
   id varchar(255) [pk] 
-  package_id varchar(255) [ref: <> package.id]
   location_id varchar(255) [ref: - address.id]
   status package_status [default: 'pending', not null]
   created_at timestamp [default: `now()`, not null]

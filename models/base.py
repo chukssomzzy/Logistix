@@ -20,7 +20,7 @@ class Base(AsyncAttrs, DeclarativeBase):
                   "created_at":  datetime.fromisoformat}
     _class_abr = "BSE"
     _repr_arg = ["id", "created_at", "updated_at"]
-    id: Mapped[str] = mapped_column(String(64), nullable=False)
+    id: Mapped[str] = mapped_column(String(64), primary_key=True)
     created_at: Mapped[datetime] = mapped_column(nullable=False,
                                                  default=datetime.utcnow)
     updated_at: Mapped[datetime] = mapped_column(nullable=False,
