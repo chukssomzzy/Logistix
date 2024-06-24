@@ -6,7 +6,7 @@ from __future__ import annotations
 from typing import Dict, Optional, List
 
 import aiobcrypt
-from sqlalchemy import ForeignKey, String
+from sqlalchemy import ForeignKey, Index, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from models.addresses import Address
@@ -25,6 +25,14 @@ class User(Base):
         ForeignKey('addresses.id'))
     address: Mapped[Optional[Address]] = relationship()
     packages: Mapped[Optional[List[Package]]] = relationship()
+    __table_args__ = (
+        Index("i_email_first_last", "email_address", "first_name", "last_name",
+              unique=True),
+        Index("i_created_at", "created_at"),
+        Index("i_updated_at", "updated_at"),
+        Index("i_id_created_updated", "id", "created_at", "updated_at",
+              unique=True),
+    )
 
     async def __init__(self, *args, **kwargs):
         """Initializes user object"""
